@@ -8,6 +8,7 @@ admin.initializeApp({
 // Dumpers
 const TransactionsDumper = require("./dumpers/transactions");
 const UsersDumper = require("./dumpers/users");
+const BusesDumper = require("./dumpers/buses");
 
 // Process args
 var args = process.argv.slice(2);
@@ -22,6 +23,14 @@ if (args.includes("users")) {
   } else if (args.includes("clear")) {
     UsersDumper.clear();
   }
+} else if (args.includes("buses")) {
+  if (args.includes("dump")) {
+    BusesDumper.dump({
+      count: 5
+    });
+  } else if (args.includes("clear")) {
+    BusesDumper.clear();
+  }
 } else if (args.includes("transactions")) {
   if (args.includes("dump")) {
     TransactionsDumper.dump({
@@ -35,5 +44,5 @@ if (args.includes("users")) {
     TransactionsDumper.clear();
   }
 } else {
-  console.log("Usage :: node . collection [dump] [clear]");
+  console.log("Usage :: node . collection-name [dump] [clear]");
 }
