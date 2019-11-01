@@ -6,10 +6,11 @@ admin.initializeApp({
 });
 
 // Dumpers
-const TransactionsDumper = require("./dumpers/transactions");
 const UsersDumper = require("./dumpers/users");
 const BusesDumper = require("./dumpers/buses");
 const StaffDumper = require("./dumpers/staff");
+const TransactionsDumper = require("./dumpers/transactions");
+const FeedbacksDumper = require("./dumpers/feedbacks");
 
 // Process args
 var args = process.argv.slice(2);
@@ -52,6 +53,14 @@ if (args.includes("users")) {
     });
   } else if (args.includes("clear")) {
     TransactionsDumper.clear();
+  }
+}else if (args.includes("feedbacks")) {
+  if (args.includes("dump")) {
+    FeedbacksDumper.dump({
+      count: 5
+    });
+  } else if (args.includes("clear")) {
+    FeedbacksDumper.clear();
   }
 } else {
   console.log("Usage :: node . collection-name [dump] [clear]");
