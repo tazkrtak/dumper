@@ -32,9 +32,9 @@ program
   });
 
 program
-  .command("dump <collections...>")
+  .command("dump [collections...]")
   .description("dump documents to collection(s)")
-  .action(collections => {
+  .action(async collections => {
     const collection = mapCollections(collections);
     if (collection.users) {
       UsersDumper.dump({
@@ -43,24 +43,24 @@ program
         idPrefix: "00"
       });
     }
+    if (collection.buses) {
+      BusesDumper.dump({
+        count: 5
+      });
+    }
     if (collection.staff) {
-      StaffDumper.dump({
+      await StaffDumper.dump({
         count: 5,
         idLength: 6
       });
     }
     if (collection.transactions) {
-      TransactionsDumper.dump({
+      await TransactionsDumper.dump({
         count: 5,
         amountRange: 100,
         allowNegative: true,
         timestampStart: new Date(2019, 0, 1)
         // userNationalId: "id_here"
-      });
-    }
-    if (collection.buses) {
-      BusesDumper.dump({
-        count: 5
       });
     }
     if (collection.feedbacks) {
@@ -71,14 +71,14 @@ program
   });
 
 program
-  .command("clear <collections...>")
+  .command("clear [collections...]")
   .description("clear dumped documents from collection(s)")
   .action(collections => {
     const collection = mapCollections(collections);
     if (collection.users) UsersDumper.clear();
+    if (collection.buses) BusesDumper.clear();
     if (collection.staff) StaffDumper.clear();
     if (collection.transactions) TransactionsDumper.clear();
-    if (collection.buses) BusesDumper.clear();
     if (collection.feedbacks) FeedbacksDumper.clear();
   });
 
@@ -87,7 +87,7 @@ program.parse(process.argv);
 function mapCollections(collections) {
   collections = [...collections];
   return collectionsNames.reduce((collection, name) => {
-    collection[name] = collections.includes(name);
+    collection[name] = collections.includes(name) || !collections.length;
     return collection;
   }, {});
 }
