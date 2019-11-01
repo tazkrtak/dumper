@@ -13,55 +13,81 @@ const TransactionsDumper = require("./dumpers/transactions");
 const FeedbacksDumper = require("./dumpers/feedbacks");
 
 // Process args
-var args = process.argv.slice(2);
+const program = require("commander");
+const collectionsNames = [
+  "users",
+  "staff",
+  "buses",
+  "transactions",
+  "feedbacks"
+];
 
-if (args.includes("users")) {
-  if (args.includes("dump")) {
-    UsersDumper.dump({
-      count: 5,
-      idLength: 14,
-      idPrefix: "00"
+program
+  .command("collections")
+  .description("list available collections")
+  .action(() => {
+    collectionsNames.forEach(collection => {
+      console.log(collection);
     });
-  } else if (args.includes("clear")) {
-    UsersDumper.clear();
-  }
-} else if (args.includes("staff")) {
-  if (args.includes("dump")) {
-    StaffDumper.dump({
-      count: 5,
-      idLength: 6
-    });
-  } else if (args.includes("clear")) {
-    StaffDumper.clear();
-  }
-} else if (args.includes("buses")) {
-  if (args.includes("dump")) {
-    BusesDumper.dump({
-      count: 5
-    });
-  } else if (args.includes("clear")) {
-    BusesDumper.clear();
-  }
-} else if (args.includes("transactions")) {
-  if (args.includes("dump")) {
-    TransactionsDumper.dump({
-      count: 5,
-      amountRange: 100,
-      allowNegative: true,
-      timestampStart: new Date(2019, 0, 1)
-      // userNationalId: "id_here"
-    });
-  } else if (args.includes("clear")) {
-    TransactionsDumper.clear();
-  }
-}else if (args.includes("feedbacks")) {
-  if (args.includes("dump")) {
-    FeedbacksDumper.dump({
-      count: 5
-    });
-  } else if (args.includes("clear")) {
-    FeedbacksDumper.clear();
-  }
-} else {
-  console.log("Usage :: node . collection-name [dump] [clear]");
+  });
+
+program
+  .command("dump <collections...>")
+  .description("dump documents to collection(s)")
+  .action(collections => {
+    const collection = mapCollections(collections);
+    if (collection.users) {
+      UsersDumper.dump({
+        count: 5,
+        idLength: 14,
+        idPrefix: "00"
+      });
+    }
+    if (collection.staff) {
+      StaffDumper.dump({
+        count: 5,
+        idLength: 6
+      });
+    }
+    if (collection.transactions) {
+      TransactionsDumper.dump({
+        count: 5,
+        amountRange: 100,
+        allowNegative: true,
+        timestampStart: new Date(2019, 0, 1)
+        // userNationalId: "id_here"
+      });
+    }
+    if (collection.buses) {
+      BusesDumper.dump({
+        count: 5
+      });
+    }
+    if (collection.feedbacks) {
+      FeedbacksDumper.dump({
+        count: 5
+      });
+    }
+  });
+
+program
+  .command("clear <collections...>")
+  .description("clear dumped documents from collection(s)")
+  .action(collections => {
+    const collection = mapCollections(collections);
+    if (collection.users) UsersDumper.clear();
+    if (collection.staff) StaffDumper.clear();
+    if (collection.transactions) TransactionsDumper.clear();
+    if (collection.buses) BusesDumper.clear();
+    if (collection.feedbacks) FeedbacksDumper.clear();
+  });
+
+program.parse(process.argv);
+
+function mapCollections(collections) {
+  collections = [...collections];
+  return collectionsNames.reduce((collection, name) => {
+    collection[name] = collections.includes(name);
+    return collection;
+  }, {});
 }

@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/tazkrtak/dumper#readme",
   "dependencies": {
+    "commander": "^4.0.0",
     "firebase-admin": "^8.6.1"
   }
 }
