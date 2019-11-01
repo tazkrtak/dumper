@@ -46,8 +46,8 @@ if (args.includes("users")) {
     TransactionsDumper.dump({
       count: 5,
       amountRange: 100,
-      timestampStart: new Date(2019, 0, 1),
-      timestampEnd: new Date()
+      allowNegative: true,
+      timestampStart: new Date(2019, 0, 1)
       // userNationalId: "id_here"
     });
   } else if (args.includes("clear")) {

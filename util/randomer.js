@@ -3,7 +3,7 @@ Array.prototype.random = function() {
 };
 
 const Randomer = {
-  getRandomDate(start, end) {
+  getRandomDate(start, end = new Date()) {
     return new Date(
       start.getTime() + Math.random() * (end.getTime() - start.getTime())
     );

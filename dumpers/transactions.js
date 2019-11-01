@@ -5,11 +5,19 @@ const randomer = require("../util/randomer");
 const db = admin.firestore();
 
 const TransactionsDumper = {
-  dump(options) {
+  async dump(options) {
     console.log("Dumping transactions...");
+
+    var usersIds = [];
+    await db
+      .collection("users")
+      .get()
+      .then(q => (usersIds = q.docs.map(doc => doc.id)))
+      .catch(e => console.log(e));
 
     var count = options.count;
     var amountRange = options.amountRange;
+    var allowNegative = options.allowNegative;
     var timestampStart = options.timestampStart;
     var timestampEnd = options.timestampEnd;
     var userNationalId = options.userNationalId;
@@ -20,13 +28,13 @@ const TransactionsDumper = {
       var docRef = db.collection("transactions").doc();
 
       var transaction = {
-        amount: randomer.getRandomNumber(amountRange),
+        amount: randomer.getRandomNumber(amountRange, allowNegative),
         id: docRef.id,
         issuer: pkjs.name,
         timestamp: admin.firestore.Timestamp.fromDate(
           randomer.getRandomDate(timestampStart, timestampEnd)
         ),
-        userNationalId: userNationalId || "NONE_EXISTING_USER"
+        userNationalId: userNationalId || usersIds.random()
       };
 
       batch.set(docRef, transaction);
