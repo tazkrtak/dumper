@@ -1,3 +1,7 @@
+Array.prototype.random = function() {
+  return this[Math.floor(Math.random() * this.length)];
+};
+
 const Randomer = {
   getRandomDate(start, end) {
     return new Date(
@@ -26,6 +30,22 @@ const Randomer = {
       nationalId += num.toString() + num.toString();
     }
     return nationalId;
+  },
+
+  getRandomStaffAccountType() {
+    return Math.floor(Math.random() * 2) == 1 ? "COL" : "CON";
+  },
+
+  getRandomStaffId(type, idLength = 4) {
+    var id = "",
+      i = 0,
+      min = type == "CON" ? 10 : 0,
+      max = type == "COL" ? 10 : 62;
+    for (; i++ < idLength; ) {
+      var r = (Math.random() * (max - min) + min) << 0;
+      id += String.fromCharCode((r += r > 9 ? (r < 36 ? 55 : 61) : 48));
+    }
+    return id.toLocaleUpperCase();
   },
 
   getRandomPhoneNumber() {

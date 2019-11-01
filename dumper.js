@@ -9,6 +9,7 @@ admin.initializeApp({
 const TransactionsDumper = require("./dumpers/transactions");
 const UsersDumper = require("./dumpers/users");
 const BusesDumper = require("./dumpers/buses");
+const StaffDumper = require("./dumpers/staff");
 
 // Process args
 var args = process.argv.slice(2);
@@ -22,6 +23,15 @@ if (args.includes("users")) {
     });
   } else if (args.includes("clear")) {
     UsersDumper.clear();
+  }
+} else if (args.includes("staff")) {
+  if (args.includes("dump")) {
+    StaffDumper.dump({
+      count: 5,
+      idLength: 6
+    });
+  } else if (args.includes("clear")) {
+    StaffDumper.clear();
   }
 } else if (args.includes("buses")) {
   if (args.includes("dump")) {
